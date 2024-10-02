@@ -1,6 +1,6 @@
 Package: hubEnsembles
 Title: Ensemble Methods for Combining Hub Model Outputs
-Version: 0.1.8
+Version: 0.1.9
 Authors@R: c(
     person(given = "Evan L", family = "Ray", email = "elray@umass.edu", role = "aut"),
     person(given = "Li", family = "Shandross", email = "lshandross@umass.edu", role = c("aut", "cre"),
@@ -34,7 +34,7 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
 NeedsCompilation: no
-Packaged: 2024-09-25 17:55:28 UTC; lshandross
+Packaged: 2024-10-02 16:43:56 UTC; lshandross
 Author: Evan L Ray [aut],
   Li Shandross [aut, cre] (<https://orcid.org/0009-0008-1348-1954>),
   Emily Howerton [aut] (<https://orcid.org/0000-0002-0639-3728>),
@@ -44,4 +44,4 @@ Author: Evan L Ray [aut],
   Consortium of Infectious Disease Modeling Hubs [cph]
 Maintainer: Li Shandross <lshandross@umass.edu>
 Repository: CRAN
-Date/Publication: 2024-09-26 11:40:02 UTC
+Date/Publication: 2024-10-02 20:20:09 UTC
