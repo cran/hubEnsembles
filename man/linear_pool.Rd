@@ -5,7 +5,7 @@
 \title{Compute ensemble model outputs as a linear pool, otherwise known as a
 distributional mixture, of component model outputs for
 each combination of model task, output type, and output type id. Supported
-output types include \code{mean}, \code{quantile}, \code{cdf}, and \code{pmf}.}
+output types include \code{mean}, \code{quantile}, \code{cdf}, \code{pmf}, and \code{sample}.}
 \usage{
 linear_pool(
   model_out_tbl,
@@ -13,8 +13,12 @@ linear_pool(
   weights_col_name = "weight",
   model_id = "hub-ensemble",
   task_id_cols = NULL,
+  compound_taskid_set = NA,
+  derived_task_ids = NULL,
   n_samples = 10000,
-  ...
+  n_output_samples = NULL,
+  ...,
+  derived_tasks = lifecycle::deprecated()
 )
 }
 \arguments{
@@ -39,12 +43,38 @@ ensemble model.}
 case all columns in \code{model_out_tbl} other than \code{"model_id"}, \code{"output_type"},
 \code{"output_type_id"}, and \code{"value"} are used as task ids.}
 
+\item{compound_taskid_set}{\code{character} vector of the compound task ID variable
+set. This argument is only relevant for \code{output_type} \code{"sample"}. Can be one
+of three possible values, with the following meanings:
+\itemize{
+\item \code{NA}: the compound_taskid_set is not relevant for the current modeling task
+\item \code{NULL}: samples are from a multivariate joint distribution across all levels
+of all task id variables
+\item Equality to \code{task_id_cols}: samples are from separate univariate distributions
+for each individual prediction task
+}
+
+Defaults to NA. Derived task ids must be included if all of the task ids their
+values depend on are part of the \code{compound_taskid_set}.}
+
+\item{derived_task_ids}{\code{character} vector of derived task IDs (variables whose
+values depend on that of other task ID variables). Defaults to NULL, meaning
+there are no derived task IDs.}
+
 \item{n_samples}{\code{numeric} that specifies the number of samples to use when
 calculating quantiles from an estimated quantile function. Defaults to \code{1e4}.}
+
+\item{n_output_samples}{\code{numeric} that specifies how many sample forecasts to
+return per unique combination of task IDs. Currently the only supported value
+is NULL, in which case all provided component model samples are collected and
+returned.}
 
 \item{...}{parameters that are passed to \code{distfromq::make_q_fn}, specifying
 details of how to estimate a quantile function from provided quantile levels
 and quantile values for \code{output_type} \code{"quantile"}.}
+
+\item{derived_tasks}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{derived_task_ids}
+instead. A \code{character} vector of derived task IDs.}
 }
 \value{
 a \code{model_out_tbl} object of ensemble predictions. Note that any
@@ -54,7 +84,7 @@ additional columns in the input \code{model_out_tbl} are dropped.
 Compute ensemble model outputs as a linear pool, otherwise known as a
 distributional mixture, of component model outputs for
 each combination of model task, output type, and output type id. Supported
-output types include \code{mean}, \code{quantile}, \code{cdf}, and \code{pmf}.
+output types include \code{mean}, \code{quantile}, \code{cdf}, \code{pmf}, and \code{sample}.
 }
 \details{
 The underlying mechanism for the computations varies for different
@@ -78,6 +108,13 @@ quantiles.
 }
 
 Steps 1 and 2 in this process are performed by \code{distfromq::make_q_fn}.
+
+When the \code{output_type} is \code{sample}, we obtain the resulting linear pool by
+collecting samples from each model, updating the \code{output_type_id} values to be
+unique for predictions that are not joint across, and pooling them together.
+If there is a restriction on the number of samples to output per compound unit,
+this number is divided evenly among the models for that compound unit (with any
+remainder distributed randomly).
 }
 \examples{
 # We illustrate the calculation of a linear pool when we have quantiles from the

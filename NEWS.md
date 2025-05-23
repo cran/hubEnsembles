@@ -1,3 +1,11 @@
+# hubEnsembles 1.0.0
+
+* `hubEnsembles.Rmd` article now explains how to ensemble samples using `linear_pool()`
+* `linear_pool()` supports requesting a subset of component model sample forecasts when ensembling samples (#144)
+* `linear_pool()` supports the specification of the compound task ID set, so that trajectory samples can be correctly ensembled (#144)
+* `linear_pool()` supports the simplest case of ensembling samples, where all component samples are collected and returned (#109)
+* `linear_pool()` now uses the argument `derived_task_ids` (`derived_tasks` is now deprecated) (#156)
+
 # hubEnsembles 0.1.9
 
 * `simple_ensemble()` now uses `identical()` to avoid triggering an `all.equal.environment()` error. This error would sometimes occur when providing the `agg_fun` argument with a custom function. (#134)
